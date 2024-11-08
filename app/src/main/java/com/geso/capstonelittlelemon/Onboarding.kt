@@ -4,7 +4,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,66 +37,68 @@ fun Onboarding() {
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
-    Column (Modifier.fillMaxWidth()){
-        Image(modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .padding(vertical = 20.dp),
-            alignment = Alignment.Center,
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Little Lemon Logo"
-        )
-        Text(text = "Let's get to know you",
-            modifier = Modifier
+    Column (Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween){
+        Column {
+            Image(modifier = Modifier
                 .fillMaxWidth()
-                .background(color = LittleLemonTheme.colors.primary1)
-                .padding(vertical = 40.dp),
-            textAlign = Center,
-            color = Color.White,
-            style = LittleLemonTheme.typography.sectionTitle
-        )
-        Text(text = "Personal Information",
-            modifier = Modifier.padding(start = 20.dp, top = 40.dp),
-            style = LittleLemonTheme.typography.sectionCategory
+                .padding(top = 40.dp, bottom = 30.dp)
+                .height(40.dp),
+                alignment = Alignment.Center,
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Little Lemon Logo"
             )
-        OutlinedTextField(value = firstName, onValueChange = {firstName = it},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, top = 40.dp),
-            maxLines = 1,
-            textStyle = LittleLemonTheme.typography.leadText,
-            label = { Text("First Name") }
+            Text(text = "Let's get to know you",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = LittleLemonTheme.colors.primary1)
+                    .padding(vertical = 50.dp),
+                textAlign = Center,
+                color = Color.White,
+                style = LittleLemonTheme.typography.sectionTitle
             )
-        OutlinedTextField(value = lastName, onValueChange = {lastName = it},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, top = 40.dp),
-            maxLines = 1,
-            textStyle = LittleLemonTheme.typography.leadText,
-            label = { Text("Last Name") }
-        )
-        OutlinedTextField(value = email, onValueChange = {email = it},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, top = 40.dp),
-            maxLines = 1,
-            textStyle = LittleLemonTheme.typography.leadText,
-            label = { Text("Email") }
-        )
+        }
+        Column (modifier = Modifier
+            .padding(start = 20.dp, end = 20.dp)){
+            Text(text = "Personal Information",
+                style = LittleLemonTheme.typography.sectionCategory
+            )
+            OutlinedTextField(value = firstName, onValueChange = {firstName = it},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                maxLines = 1,
+                textStyle = LittleLemonTheme.typography.leadText,
+                label = { Text("First Name") }
+            )
+            OutlinedTextField(value = lastName, onValueChange = {lastName = it},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                maxLines = 1,
+                textStyle = LittleLemonTheme.typography.leadText,
+                label = { Text("Last Name") }
+            )
+            OutlinedTextField(value = email, onValueChange = {email = it},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                maxLines = 1,
+                textStyle = LittleLemonTheme.typography.leadText,
+                label = { Text("Email") }
+            )
+        }
         Button(onClick = { /*TODO*/ },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp, top = 60.dp, bottom = 40.dp),
                     border = BorderStroke(1.dp, LittleLemonTheme.colors.secondary1),
-        shape = RoundedCornerShape(30), // = 30% percent
-
-
+            shape = RoundedCornerShape(30), // = 30% percent
             colors = ButtonColors(containerColor = LittleLemonTheme.colors.primary2,
                 contentColor = Color.Black, disabledContentColor = Color.Black,
                 disabledContainerColor = LittleLemonTheme.colors.secondary2)
         ) {
             Text(text = "Register", style = LittleLemonTheme.typography.paragraph)
-
         }
     }
 }
