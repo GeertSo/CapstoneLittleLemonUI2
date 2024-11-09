@@ -13,8 +13,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -31,9 +39,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign.Companion.Center
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.navOptions
 import com.geso.capstonelittlelemon.ui.theme.LittleLemonTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -81,25 +91,51 @@ fun Onboarding(navController: NavHostController, ctx: Context) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 20.dp),
-                        maxLines = 1,
+                        singleLine = true,
                         textStyle = LittleLemonTheme.typography.leadText,
-                        label = { Text("First Name") }
+                        label = { Text("First Name") },
+                        leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "Person Icon") },
+                        trailingIcon = {
+                            if (firstName.isNotEmpty()) {
+                                IconButton(onClick = { firstName = "" }) {
+                                    Icon(Icons.Filled.Clear, contentDescription = "Clear Text")
+                                }
+                            }
+                        },
                     )
                     OutlinedTextField(value = lastName, onValueChange = {lastName = it},
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 20.dp),
-                        maxLines = 1,
+                        singleLine = true,
                         textStyle = LittleLemonTheme.typography.leadText,
-                        label = { Text("Last Name") }
+                        label = { Text("Last Name") },
+                        leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "Person Icon") },
+                        trailingIcon = {
+                            if (lastName.isNotEmpty()) {
+                                IconButton(onClick = { lastName = "" }) {
+                                    Icon(Icons.Filled.Clear, contentDescription = "Clear Text")
+                                }
+                            }
+                        },
                     )
                     OutlinedTextField(value = email, onValueChange = {email = it},
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 20.dp),
-                        maxLines = 1,
+                        singleLine = true,
                         textStyle = LittleLemonTheme.typography.leadText,
-                        label = { Text("Email") }
+                        label = { Text("Email") },
+                        leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "email Icon") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        trailingIcon = {
+                            if (email.isNotEmpty()) {
+                                IconButton(onClick = { email = "" }) {
+                                    Icon(Icons.Filled.Clear, contentDescription = "Clear Text")
+                                }
+                            }
+                        },
+                        isError = email.isNotEmpty() && !email.contains('@')
                     )
                 }
                 Button(
@@ -149,8 +185,9 @@ fun onClickfun(firstName: String, lastName: String, eMail: String,
         profileEdit.putString("lastName", lastName)
         profileEdit.putString("eMail", eMail)
         profileEdit.commit()
-        navController.navigate("home")
-        // TODO delete the stack!
+        navController.navigate(route = "home",
+            navOptions = navOptions { popUpTo(route = "onboarding"){inclusive = true} }
+        )
     }
 }
 
