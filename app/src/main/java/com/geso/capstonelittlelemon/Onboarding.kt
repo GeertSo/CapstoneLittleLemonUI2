@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
@@ -38,29 +37,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign.Companion.Center
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.geso.capstonelittlelemon.ui.theme.LittleLemonTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun Onboarding(navController: NavHostController, ctx: Context) {
+fun Onboarding(navController: NavHostController) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val ctx: Context = LocalContext.current
 
     Scaffold(
         snackbarHost = {SnackbarHost(hostState = snackbarHostState, modifier = Modifier.fillMaxWidth())},
         content = { paddingValues ->
-            Log.d(TAG, "Onboarding: paddingValues = ${paddingValues}")
+            Log.d(TAG, "Onboarding: paddingValues = $paddingValues")
             Column (Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween){
                 Column {
@@ -139,7 +142,8 @@ fun Onboarding(navController: NavHostController, ctx: Context) {
                     )
                 }
                 Button(
-                    onClick = {onClickfun(firstName, lastName, email, scope, snackbarHostState, navController, ctx)},
+                    onClick = {onClickRegister(firstName, lastName, email, scope,
+                        snackbarHostState, navController, ctx)},
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 20.dp, end = 20.dp, top = 60.dp, bottom = 40.dp),
@@ -156,47 +160,50 @@ fun Onboarding(navController: NavHostController, ctx: Context) {
     )
 }
 
-fun onClickfun(firstName: String, lastName: String, eMail: String,
-               scope: CoroutineScope,
-               snackbarHostState: SnackbarHostState,
-               navController: NavHostController,
-               ctx: Context) {
-    val profileEmpty: Boolean = firstName.isEmpty() || lastName.isEmpty() || eMail.isEmpty()
+fun onClickRegister(firstName: String, lastName: String, eMail: String,
+                    scope: CoroutineScope,
+                    snackbarHostState: SnackbarHostState,
+                    navController: NavHostController,
+                    ctx: Context) {
+    val profileEmpty: Boolean = firstName.isEmpty() || lastName.isEmpty()
+            || eMail.isEmpty() || !eMail.contains('@')
 
-    Log.d(TAG, "onClickfun: firstName = ${firstName}, lastName = ${lastName}, " +
-            "email = ${eMail}, profileEmpty = ${profileEmpty}")
+    Log.d(
+        TAG, "onClickfun: firstName = ${firstName}, lastName = ${lastName}, " +
+                "email = ${eMail}, profileEmpty = $profileEmpty"
+    )
     if (profileEmpty) {
         scope.launch {
             snackbarHostState.showSnackbar(
                 message = "Registration unsuccessful. Please enter all data.",
-                duration = SnackbarDuration.Long) }
+                duration = SnackbarDuration.Long
+            )
+        }
     } else {
-        firstNamePref = firstName
-        lastNamePref = lastName
-        eMailPref = eMail
         scope.launch {
             snackbarHostState.showSnackbar(
                 message = "Registration successfull!",
-                duration = SnackbarDuration.Long) }
+                duration = SnackbarDuration.Long
+            )
+        }
         val profileSharedPref = ctx.getSharedPreferences(PROFILESHAREDPREFERENCES, MODE_PRIVATE)
         val profileEdit = profileSharedPref.edit()
 
         profileEdit.putString("firstName", firstName)
         profileEdit.putString("lastName", lastName)
         profileEdit.putString("eMail", eMail)
-        profileEdit.commit()
+        profileEdit.apply()
         navController.navigate(route = "home",
-            navOptions = navOptions { popUpTo(route = "onboarding"){inclusive = true} }
+            navOptions = navOptions { popUpTo(route = "onboarding") { inclusive = true } }
         )
     }
 }
 
-/*
 @Preview
 @Composable
 fun OnboardingPreview() {
     LittleLemonTheme {
-        Onboarding()
+        val navController = rememberNavController()
+        Onboarding(navController)
     }
 }
- */

@@ -33,7 +33,7 @@ fun Home(navController: NavHostController) {
 
     Column {
 
-        Text(text = "Home Screen $firstNamePref $lastNamePref $eMailPref",
+        Text(text = "Home Screen",
             modifier = Modifier.padding(vertical = 40.dp))
 
         TextFieldWithIcons()
