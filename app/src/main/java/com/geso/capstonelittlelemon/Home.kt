@@ -17,12 +17,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.geso.capstonelittlelemon.ui.theme.LittleLemonTheme
 
@@ -30,7 +33,6 @@ import com.geso.capstonelittlelemon.ui.theme.LittleLemonTheme
 @Composable
 fun Home(navController: NavHostController) {
     Log.d(TAG, "Home: started")
-
     Column {
 
         Text(text = "Home Screen",
@@ -77,12 +79,12 @@ fun TextFieldWithIcons() {
 }
 
 
-/*
+
 @Preview
 @Composable
 fun HomePreview() {
     LittleLemonTheme {
+        val navController = rememberNavController()
         Home(navController)
     }
 }
- */
