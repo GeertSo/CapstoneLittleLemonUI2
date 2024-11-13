@@ -69,7 +69,7 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.runtime.livedata)
-    kapt("androidx.room:room-compiler:2.4.3")
+    kapt("androidx.room:room-compiler:2.6.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
