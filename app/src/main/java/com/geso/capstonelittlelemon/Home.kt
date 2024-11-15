@@ -8,16 +8,20 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,21 +31,36 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role.Companion.Button
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.geso.capstonelittlelemon.ui.theme.LittleLemonTheme
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 
@@ -49,6 +68,15 @@ import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 @Composable
 fun Home(navController: NavHostController) {
     Log.d(TAG, "Home: started")
+
+    val ctx = LocalContext.current
+    val database by lazy {
+        Room.databaseBuilder(
+            ctx,
+            MenuDatabase::class.java,
+            "menu.db"
+        ).build()
+    }
 
     Scaffold(
         topBar = {
@@ -77,24 +105,85 @@ fun Home(navController: NavHostController) {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            //verticalArrangement = Arrangement.Center
         )
         {
+            val menuItems by database.menuDao().getAllMenuItems().observeAsState(emptyList())
             HeroSection()
             MenuBreakdown()
-            MenuSection()
+            MenuSection(menuItems)
         }
     }
 }
 
 @Composable
-fun MenuSection() {
-    //TODO("Not yet implemented")
+fun MenuSection(menuItems: List<MenuItem>) {
+        LazyColumn (modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp)) {
+                items(items = menuItems, itemContent = { item ->
+                    Log.d(TAG, "MenuSection: item = $item")
+                    MenuItemComp(item)
+                })
+            }
 }
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun MenuItemComp(item: MenuItem) {
+    Column (modifier = Modifier.fillMaxWidth()) {
+        Text(text = item.title, style = LittleLemonTheme.typography.cardTitle)
+        Row () {
+            Column (modifier = Modifier.weight(0.5F)){
+                Text(text = item.description)
+                Text(text = "$${item.price}")
+            }
+            GlideImage(
+                model = item.image,
+                contentDescription = "picture of ${item.title}",
+                modifier = Modifier.padding().weight(0.3F),
+            )
+
+        }
+    }
+}
+
+/*
+@Composable
+fun LazyColumnDemo() {
+    val list = listOf(
+        "A", "B", "C", "D"
+    ) + ((0..100).map { it.toString() })
+    LazyColumn(modifier = Modifier.fillMaxHeight()) {
+        items(items = list, itemContent = { item ->
+            Log.d("COMPOSE", "This get rendered $item")
+            when (item) {
+                "A" -> {
+                    Text(text = item, style = TextStyle(fontSize = 80.sp))
+                }
+                "B" -> {
+                    Button(onClick = {}) {
+                        Text(text = item, style = TextStyle(fontSize = 80.sp))
+                    }
+                }
+                "C" -> {
+                    //Do Nothing
+                }
+                "D" -> {
+                    Text(text = item)
+                }
+                else -> {
+                    Text(text = item, style = TextStyle(fontSize = 80.sp))
+                }
+            }
+        })
+    }
+}
+ */
 
 @Composable
 fun MenuBreakdown() {
     //TODO("Not yet implemented")
+    Column (modifier = Modifier.fillMaxWidth()) {
+        Text(text = "find Categories here")
+    }
 }
 
 @Composable

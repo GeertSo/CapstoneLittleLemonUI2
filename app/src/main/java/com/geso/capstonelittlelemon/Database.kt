@@ -18,7 +18,7 @@ abstract class MenuDatabase : RoomDatabase() {
 @Dao
 interface MenuDao {
     @Query("SELECT * FROM Menu")
-    fun getAllMenuItems() : List<MenuItem>
+    fun getAllMenuItems() : LiveData<List<MenuItem>>
 
     @Insert
     fun saveMenuItem(menuItem: MenuItem)

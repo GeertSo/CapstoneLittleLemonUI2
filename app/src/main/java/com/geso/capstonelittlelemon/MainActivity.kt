@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -90,7 +91,7 @@ class MainActivity : ComponentActivity() {
                         )
                         database.menuDao().saveMenuItem(menuItem)
                     }
-                    val menuItemList: List<MenuItem> = database.menuDao().getAllMenuItems()
+                    val menuItemList = database.menuDao().getAllMenuItems()
                     Log.d(TAG, "onCreate: menuItemList from DB: $menuItemList")
                 }
             }
@@ -101,15 +102,18 @@ class MainActivity : ComponentActivity() {
             LittleLemonTheme {
                 val navController = rememberNavController()
                 MyNavigation(navController)
-/*
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    val items = menuItemsLiveData.observeAsState(emptyList())
-                    MenuItems(items.value)
-                }
+                val menuItems by database.menuDao().getAllMenuItems()
+                    .observeAsState(emptyList())
 
- */
+                /*
+                                Column(
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    val items = menuItemsLiveData.observeAsState(emptyList())
+                                    MenuItems(items.value)
+                                }
+
+                 */
             }
         }
     }
