@@ -48,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -57,7 +58,6 @@ import com.geso.capstonelittlelemon.ui.theme.LittleLemonTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(navController: NavHostController) {
-    Log.d(TAG, "Home: started")
     val ctx = LocalContext.current
     val database by lazy {
         Room.databaseBuilder(
@@ -88,24 +88,19 @@ fun Home(navController: NavHostController) {
                         Text(text = " ",
                             Modifier
                                 .weight(1f)
-//                                .border(width = 1.dp, color = Color.Blue)
                         )
                         Image(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .weight(2f)
-//                                .border(BorderStroke(1.dp, Color.Red))
-                                .width(180.dp)
-                            ,
+                                .width(180.dp),
                             painter = painterResource(id = R.drawable.logo),
                             contentDescription = "Little Lemon Logo",
                             contentScale = ContentScale.FillWidth
                         )
                         Row (
                             Modifier
-                                .weight(1f)
-//                                .border(1.dp, color = Color.Green)
-                            ,
+                                .weight(1f),
                             horizontalArrangement = Arrangement.End) {
                             IconButton(onClick = {
                                 navController.navigate(route = "profile")
@@ -147,8 +142,6 @@ fun Home(navController: NavHostController) {
                 }
             )
 
-//            Log.d(TAG, "Home: categoriesSelected = ${categoriesSelected}")
-
             if (categoriesSelected.containsValue(true)) {
                 val menuItemsFilter =
                     menuItemsSearch.filter { categoriesSelected[it.category] == true }
@@ -180,13 +173,11 @@ fun MenuItemComp(item: MenuItem) {
             modifier = Modifier.padding(vertical = 10.dp))
         Text(text = item.title, style = LittleLemonTheme.typography.cardTitle)
         Row (modifier = Modifier
-//            .border(1.dp, color = Color.Blue)
             .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column (modifier = Modifier.weight(0.7F)
-//                .border(2.dp, color = Color.Red)
             ){
                 Text(text = item.description,
                     modifier = Modifier.padding(vertical = 10.dp),
@@ -203,7 +194,6 @@ fun MenuItemComp(item: MenuItem) {
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .weight(0.3F)
-//                    .border(2.dp, color = Color.Red)
                     .fillMaxHeight(),
             )
         }
@@ -213,9 +203,6 @@ fun MenuItemComp(item: MenuItem) {
 
 @Composable
 fun MenuBreakdown(categoriesSet: Set<String>, categoriesSelected: MutableMap<String, Boolean>, selectCategory: (String) -> Unit) {
-
-//    Log.d(TAG, "MenuBreakdown: categoriesSet = $categoriesSet")
-//    Log.d(TAG, "MenuBreakdown: categoriesSelected = $categoriesSelected")
 
     Column (modifier = Modifier
         .fillMaxWidth()
@@ -231,7 +218,6 @@ fun MenuBreakdown(categoriesSet: Set<String>, categoriesSelected: MutableMap<Str
                     Button(
                         onClick = {
                             selectCategory(item)
-//                            Log.d(TAG, "MenuBreakdown: clicked Item: $item")
                         },
                         modifier = Modifier.padding(end = 8.dp),
                         shape = RoundedCornerShape(50), // = 50% percent
@@ -264,8 +250,7 @@ fun HeroSection(searchPhrase: String, onSearchChange: (String) -> Unit) {
             text = "Little Lemon")
         Row (
             Modifier
-                .fillMaxWidth(),
-//            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth()
         ){
 
             Column (modifier = Modifier
@@ -285,7 +270,6 @@ fun HeroSection(searchPhrase: String, onSearchChange: (String) -> Unit) {
             Image(modifier = Modifier
                 .weight(0.4F)
                 .heightIn(min = 100.dp, max = 180.dp)
-                //.border(BorderStroke(1.dp, Color.Yellow))
                 .clip(RoundedCornerShape(20)),
                 contentScale = ContentScale.Crop,
                 painter = painterResource(id = R.drawable.hero_image),
@@ -296,17 +280,9 @@ fun HeroSection(searchPhrase: String, onSearchChange: (String) -> Unit) {
             value = searchPhrase,
             onValueChange = onSearchChange,
             textStyle = LittleLemonTheme.typography.highlight,
-            //label = { Text("Enter Search Phrase") },
             placeholder = { Text(text = "Enter Search Phrase", fontSize = 16.sp) },
             singleLine = true,
-            leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search Icon") },
-//            trailingIcon = {
-//                if (searchPhrase.isNotEmpty()) {
-//                    IconButton(onClick = { searchPhrase = "" }) {
-//                        Icon(Icons.Filled.Clear, contentDescription = "Clear Text")
-//                    }
-//                }
-//            },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 20.dp),
@@ -335,7 +311,7 @@ fun MenuBreakdownPreview() {
 
 }
 
-/*
+
 @Preview
 @Composable
 fun HomePreview() {
@@ -356,4 +332,4 @@ fun MenuSectionPreview() {
     MenuSection(menuItems = mItemList)
 }
 
- */
+

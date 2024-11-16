@@ -20,9 +20,6 @@ fun MyNavigation(navController: NavHostController) {
 
     val profileEmpty: Boolean = firstName.isEmpty() || lastName.isEmpty() || eMail.isEmpty()
 
-    Log.d(TAG, "MyNavigation: firstName = ${firstName}, lastName = ${lastName}, " +
-            "email = ${eMail}, profileEmpty = $profileEmpty")
-
     NavHost(navController = navController,
         startDestination = if (profileEmpty) Onboarding.route else Home.route)
     {

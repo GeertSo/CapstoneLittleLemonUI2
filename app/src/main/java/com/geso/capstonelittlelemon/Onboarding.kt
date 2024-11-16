@@ -77,11 +77,9 @@ fun Onboarding(navController: NavHostController) {
                     containerColor = Color.Unspecified,
                     titleContentColor = Color.Unspecified
                 ),
-//                modifier = Modifier.height(100.dp),
                 title = {
                     Row(modifier = Modifier
                         .fillMaxWidth()
-//                        .border(width = 1.dp, color = Color.Blue)
                         .padding(end = 20.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
@@ -89,7 +87,6 @@ fun Onboarding(navController: NavHostController) {
                         Image(
                             modifier = Modifier
                                 .fillMaxHeight()
-//                                .border(BorderStroke(1.dp, Color.Red))
                                 .width(180.dp)
                             ,
                             painter = painterResource(id = R.drawable.logo),
