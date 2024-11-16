@@ -7,9 +7,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -80,16 +82,28 @@ fun Profile(navController: NavHostController) {
                     containerColor = Color.Unspecified,
                     titleContentColor = Color.Unspecified
                 ),
-                modifier = Modifier.height(100.dp),
+//                modifier = Modifier.height(100.dp),
                 title = {
-                    Image(modifier = Modifier
+                    Row(modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 40.dp)
-                        .height(40.dp),
-                        alignment = Alignment.Center,
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = "Little Lemon Logo"
-                    )
+//                        .border(width = 1.dp, color = Color.Blue)
+                        .padding(end = 20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxHeight()
+//                                .border(BorderStroke(1.dp, Color.Red))
+                                .width(180.dp)
+                            ,
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = "Little Lemon Logo",
+                            contentScale = ContentScale.FillWidth,
+                            alignment = Alignment.Center
+                        )
+
+                    }
                 }
             )
         },

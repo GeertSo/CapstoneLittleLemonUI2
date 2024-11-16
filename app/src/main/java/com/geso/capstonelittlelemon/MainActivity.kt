@@ -5,21 +5,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.MutableLiveData
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
@@ -70,16 +55,19 @@ class MainActivity : ComponentActivity() {
         Log.d(TAG, "onCreate: firstName = $firstName, lastName = $lastName, email = $eMail")
 
         lifecycleScope.launch {
+            Log.d(TAG, "onCreate: Start read menu from network")
             val menu = getMenu()
-//            runOnUiThread {
-//                menuItemsLiveData.value = menu.menu
-//            }
-            Log.d(TAG, "onCreate: read menu from file, 3rd entry = ${menu.menu[2]}")
+            Log.d(TAG, "onCreate: Finished read menu from network")
 
             lifecycleScope.launch {
                 withContext(IO) {
+//                    val menuItemListBeforeDelete = database.menuDao().getAllMenuItems()
+//                    Log.d(TAG, "onCreate: menuItemList from DB BEFORE Delete: ${menuItemListBeforeDelete}")
                     // delete all entries from the database, if existing already
                     database.menuDao().deleteAllMenuItems()
+//                    val menuItemListAfterDelete = database.menuDao().getAllMenuItems()
+//                    Log.d(TAG, "onCreate: menuItemList from DB AFTER Delete: ${menuItemListAfterDelete}")
+
                     for (menuNetworkItem in menu.menu) {
                         val menuItem = MenuItem(
                             menuNetworkItem.id,
@@ -90,9 +78,10 @@ class MainActivity : ComponentActivity() {
                             menuNetworkItem.category
                         )
                         database.menuDao().saveMenuItem(menuItem)
+//                        Log.d(TAG, "onCreate: menu item saved: $menuItem")
                     }
-                    val menuItemList = database.menuDao().getAllMenuItems()
-                    Log.d(TAG, "onCreate: menuItemList from DB: $menuItemList")
+//                    val menuItemList = database.menuDao().getAllMenuItems()
+//                    Log.d(TAG, "onCreate: FINAL menuItemList from DB: $menuItemList")
                 }
             }
         }
@@ -102,18 +91,6 @@ class MainActivity : ComponentActivity() {
             LittleLemonTheme {
                 val navController = rememberNavController()
                 MyNavigation(navController)
-                val menuItems by database.menuDao().getAllMenuItems()
-                    .observeAsState(emptyList())
-
-                /*
-                                Column(
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    val items = menuItemsLiveData.observeAsState(emptyList())
-                                    MenuItems(items.value)
-                                }
-
-                 */
             }
         }
     }
@@ -123,29 +100,5 @@ class MainActivity : ComponentActivity() {
             client.get("https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json")
                 .body()
         return response
-    }
-}
-
-@Composable
-fun MenuItems(
-    items: List<MenuItemNetwork> = emptyList(),
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        LazyColumn {
-            itemsIndexed(items) { _, item ->
-                MenuItemDetails(item.title)
-            }
-        }
-    }
-}
-
-@Composable
-fun MenuItemDetails(menuItem: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = menuItem)
     }
 }
