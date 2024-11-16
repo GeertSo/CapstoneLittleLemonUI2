@@ -8,18 +8,22 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -28,6 +32,8 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,6 +57,7 @@ import com.geso.capstonelittlelemon.ui.theme.LittleLemonTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Onboarding(navController: NavHostController) {
     var firstName by remember { mutableStateOf("") }
@@ -61,20 +69,67 @@ fun Onboarding(navController: NavHostController) {
     val ctx: Context = LocalContext.current
 
     Scaffold(
-        snackbarHost = {SnackbarHost(hostState = snackbarHostState, modifier = Modifier.fillMaxWidth())},
-        content = { paddingValues ->
-            Log.d(TAG, "Onboarding: paddingValues = $paddingValues")
-            Column (Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween){
-                Column {
-                    Image(modifier = Modifier
+        snackbarHost = {SnackbarHost(hostState = snackbarHostState,
+            modifier = Modifier.fillMaxWidth())},
+        topBar = {
+            TopAppBar(
+                colors = topAppBarColors(
+                    containerColor = Color.Unspecified,
+                    titleContentColor = Color.Unspecified
+                ),
+//                modifier = Modifier.height(100.dp),
+                title = {
+                    Row(modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 40.dp, bottom = 30.dp)
-                        .height(40.dp),
-                        alignment = Alignment.Center,
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = "Little Lemon Logo"
-                    )
+//                        .border(width = 1.dp, color = Color.Blue)
+                        .padding(end = 20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxHeight()
+//                                .border(BorderStroke(1.dp, Color.Red))
+                                .width(180.dp)
+                            ,
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = "Little Lemon Logo",
+                            contentScale = ContentScale.FillWidth,
+                            alignment = Alignment.Center
+                        )
+
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            BottomAppBar(
+                containerColor = Color.Unspecified,
+                contentColor = Color.Unspecified,
+            ) {
+                Button(
+                    onClick = {onClickRegister(firstName, lastName, email, scope,
+                        snackbarHostState, navController, ctx)},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp),
+                    border = BorderStroke(1.dp, LittleLemonTheme.colors.secondary1),
+                    shape = RoundedCornerShape(30), // = 30% percent
+                    colors = ButtonColors(containerColor = LittleLemonTheme.colors.primary2,
+                        contentColor = Color.Black, disabledContentColor = Color.Black,
+                        disabledContainerColor = LittleLemonTheme.colors.secondary2)
+                ) {
+                    Text(text = "Register", style = LittleLemonTheme.typography.paragraph)
+                }
+            }
+        },
+        content = { innerPadding ->
+            Column (modifier = Modifier.padding(innerPadding)
+                .padding(start = 20.dp, end = 20.dp)
+                .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceEvenly
+            ){
+                Column {
                     Text(text = "Let's get to know you",
                         modifier = Modifier
                             .fillMaxWidth()
@@ -88,7 +143,7 @@ fun Onboarding(navController: NavHostController) {
                 Column (modifier = Modifier
                     .padding(start = 20.dp, end = 20.dp)){
                     Text(text = "Personal Information",
-                        style = LittleLemonTheme.typography.sectionCategory
+                        style = LittleLemonTheme.typography.cardTitle
                     )
                     OutlinedTextField(value = firstName, onValueChange = {firstName = it},
                         modifier = Modifier
@@ -140,20 +195,6 @@ fun Onboarding(navController: NavHostController) {
                         },
                         isError = email.isNotEmpty() && !email.contains('@')
                     )
-                }
-                Button(
-                    onClick = {onClickRegister(firstName, lastName, email, scope,
-                        snackbarHostState, navController, ctx)},
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, end = 20.dp, top = 60.dp, bottom = 40.dp),
-                    border = BorderStroke(1.dp, LittleLemonTheme.colors.secondary1),
-                    shape = RoundedCornerShape(30), // = 30% percent
-                    colors = ButtonColors(containerColor = LittleLemonTheme.colors.primary2,
-                        contentColor = Color.Black, disabledContentColor = Color.Black,
-                        disabledContainerColor = LittleLemonTheme.colors.secondary2)
-                ) {
-                    Text(text = "Register", style = LittleLemonTheme.typography.paragraph)
                 }
             }
         }

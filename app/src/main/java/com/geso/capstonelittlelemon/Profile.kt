@@ -136,7 +136,7 @@ fun Profile(navController: NavHostController) {
             {
                 Text(
                     text = "Personal Information",
-                    style = LittleLemonTheme.typography.sectionCategory
+                    style = LittleLemonTheme.typography.cardTitle
                 )
                 OutlinedTextField(
                     value = firstName, onValueChange = { firstName = it },
